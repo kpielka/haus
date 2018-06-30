@@ -1,5 +1,7 @@
 // Gruppen
 Group Keller_Gast
+Group Keller_Gast_Alle_Lichter
+Group Keller_Gast_Alle_Radiosender
 
 /* Wetter Infos */
 Number:Temperature Aussentemperatur "Aussentemperatur [%.1f %unit%]" { channel="yahooweather:weather:reilingen:temperature" }
@@ -8,17 +10,20 @@ Number:Pressure Luftdruck "Luftdruck [%.1f %unit%]" { channel="yahooweather:weat
 
 /* Keller Gästezimmer */
 Number Keller_Gast_Wunsch_Temperatur (Keller_Gast) ["Switchable"]
-Switch Keller_Gast_Licht "Licht" (Keller_Gast) ["Switchable"]
-Switch Keller_Gast_Licht_Bett "Licht Bett" (Keller_Gast) ["Switchable"]
-Switch Keller_Gast_Licht_Fernseher "Licht Fernseher" (Keller_Gast) ["Switchable"]
-Switch Keller_Gast_Licht_Schreibtisch "Licht Schreibtisch" (Keller_Gast) ["Switchable"]
-Switch Keller_Gast_Musik "Musik" (Keller_Gast) ["Switchable"]
-Switch Keller_Gast_Musik_SWR3 "SWR3" (Keller_Gast) ["Switchable"]
-Switch Keller_Gast_Musik_Klassik "Klassik Radio" (Keller_Gast) ["Switchable"]
-Switch Keller_Gast_Musik_Jazz "Jazz Radio" (Keller_Gast) ["Switchable"]
-Switch Keller_Gast_Musik_Entspannung "Entspannung" (Keller_Gast) ["Switchable"]
-Switch Keller_Gast_Musik_Soundtrack "Soundtrack" (Keller_Gast) ["Switchable"]
-Switch Keller_Gast_Musik_Schlager "Schlager" (Keller_Gast) ["Switchable"]
+Number Keller_Gast_Licht_Helligkeit (Keller_Gast) ["Switchable"]
+// Switch Keller_Gast_Licht "Licht" (Keller_Gast) ["Switchable"]
+Switch Keller_Gast_Licht_Bett "Licht Bett" (Keller_Gast_Alle_Lichter) ["Switchable"]
+Switch Keller_Gast_Licht_Fernseher "Licht Fernseher" (Keller_Gast_Alle_Lichter) ["Switchable"]
+Switch Keller_Gast_Licht_Schreibtisch "Licht Schreibtisch" (Keller_Gast_Alle_Lichter) ["Switchable"]
+Number Keller_Gast_Lautstaerke (Keller_Gast) ["Switchable"]
+// Switch Keller_Gast_Musik "Musik" (Keller_Gast) ["Switchable"]
+Switch Keller_Gast_Musik_SWR3 "SWR3" (Keller_Gast_Alle_Radiosender) ["Switchable"]
+Switch Keller_Gast_Musik_Klassik "Klassik Radio" (Keller_Gast_Alle_Radiosender) ["Switchable"]
+Switch Keller_Gast_Musik_Jazz "Jazz Radio" (Keller_Gast_Alle_Radiosender) ["Switchable"]
+Switch Keller_Gast_Musik_Entspannung "Entspannung" (Keller_Gast_Alle_Radiosender) ["Switchable"]
+Switch Keller_Gast_Musik_Soundtrack "Soundtrack" (Keller_Gast_Alle_Radiosender) ["Switchable"]
+Switch Keller_Gast_Musik_Schlager "Schlager" (Keller_Gast_Alle_Radiosender) ["Switchable"]
+
 
 
 
