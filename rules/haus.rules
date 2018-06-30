@@ -4,12 +4,10 @@ when
 then
 	postUpdate(Keller_Gast_Wunsch_Temperatur, 21.0);
 	postUpdate(Keller_Gast_Licht_Helligkeit, 50.0);
-	// postUpdate(Keller_Gast_Licht, OFF);
 	postUpdate(Keller_Gast_Licht_Bett, OFF);
 	postUpdate(Keller_Gast_Licht_Fernseher, OFF);
 	postUpdate(Keller_Gast_Licht_Schreibtisch, OFF);
 	postUpdate(Keller_Gast_Lautstaerke, 20.0);
-	// postUpdate(Keller_Gast_Musik, OFF);
 	postUpdate(Keller_Gast_Musik_SWR3, OFF);
 	postUpdate(Keller_Gast_Musik_Klassik, OFF);
 	postUpdate(Keller_Gast_Musik_Jazz, OFF);
