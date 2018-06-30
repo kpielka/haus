@@ -1,0 +1,63 @@
+// Gruppen
+String VoiceCommand
+Group Wohnmobil
+Group gRouting
+Group gPlayList
+Group gTechnicalInfo
+Group WoMo
+Group Overview
+
+/* Daten vom WoMo per vpn übertragen */
+String WoMo_Temperatur "Temperatur [%s°C]" <temperature> (WoMo)
+String WoMo_Luftfeuchtigkeit "Luftfeuchtigkeit [%s %%]" <humidity> (WoMo)
+Switch WoMo_Heizungs_Schalter "Heizung" <switch> (WoMo) ["Switchable"]
+String WoMo_Wunsch_Temperatur "Wunschtemperatur [%s°C]" (WoMo)
+Number WoMo_Battery_Percent
+Number WoMo_Frischwasser
+Number WoMo_Gas1
+Number WoMo_Gas2
+
+/* technische Infos anzeigen */
+String Brick_1_Voltage  "Brick 1 Spannung [%s Volt]" <sensor> (gTechnicalInfo)
+String Brick_1_Current  "Brick 1 Stromstärke [%s Ampere]" <sensor> (gTechnicalInfo)
+
+/* Einstellungen */
+// Number Router "Helligkeit" ["Switchable"]
+
+Number Szene "Szene" ["Switchable"]
+
+Switch Weiterleitung_durch_WLAN "per WLAN" <switch> (gRouting) ["Switchable"]
+Switch Weiterleitung_durch_Mobilfunk "per Mobilfunk" <switch> (gRouting) ["Switchable"]
+Switch Weiterleitung_durch_VPN "per VPN" <switch> (gRouting) ["Switchable"]
+
+/* Wohnmobil */
+Switch Wohnmobil_Heizungs_Schalter "Heizung" <radiator> (Wohnmobil) ["Switchable"] 
+Group WohnmobilThermostat "Fahrzeug" (Wohnmobil) ["Thermostat"]
+Number Wohnmobil_Wunsch_Temperatur "Thermostat" (WohnmobilThermostat) ["TargetTemperature"]
+
+String Truma_Brenner "Brenner [%s]" <fire> (Wohnmobil)
+
+String Wohnmobil_Temperatur_DHT22
+String Wohnmobil_Temperatur        "Temperatur [%s °C]" <temperature> (WohnmobilThermostat) ["CurrentTemperature"]
+String Wohnmobil_Luftfeuchtigkeit "Luftfeuchtigkeit [%s %%]" <humidity> (Wohnmobil) 
+
+Number Wohnmobil_Battery_Voltage "Batterie [%s Volt]" (Wohnmobil)
+Number Wohnmobil_Battery_Percent
+
+Switch Wohnmobil_Relais "Licht" <wallswitch> (Wohnmobil) ["Switchable"] 
+
+// Musik
+/*
+Number Keller_Gast_Musik "Musik" ["Switchable"]
+Number Keller_Gast_TV "TV" ["Switchable"]
+Number Keller_Gast_Lautstaerke "Lautstärke" ["Switchable"]
+*/
+
+// Sonstige Variablen
+String Heizung_ist_eingeschaltet "false"
+
+// Answenheitserkennung
+// Switch MyDevice { channel="network:pingdevice:devicename:online" }
+// Number MyDeviceResponseTime { channel="network:pingdevice:devicename:latency" }
+
+// vim: syntax=Xtend

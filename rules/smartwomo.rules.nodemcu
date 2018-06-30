@@ -1,0 +1,41 @@
+rule "update battery icon"
+	when
+		Item Wohnmobil_Battery_Voltage changed
+	then
+	
+		var double voltageDivider = 1 / 11; // der Spannungsteiler besteht aus einem 10 kOhm Widerstand und einem 1 kOhm Widerstand
+        var double voltagePerBit = 3.3 / 1024; // die Maximalspannung am IO betraegt 3.3 Volt und die Auflösung des IO sind 1024 Bit
+       
+        // var double batteryPercentage = (((Wohnmobil_Battery_Voltage.state as DecimalType) - 11.8) / (12.6 - 11.8)) * 100;
+        var double batteryPercentage = (((Wohnmobil_Battery_Voltage.state as DecimalType) - 11.8) / (12.6 - 11.8)) * 100;
+       
+        // Der Ladezustand von Batterien ist temperaturabhängig; Abweichung berechnen und beruecksichtigen ...
+                
+        var double percentDeviationPerDegree = 6.0;
+        var double deviationInPercent = 0.0;      
+        
+        // if ( ( (Wohnmobil_Temperatur.state as DecimalType) > -100.0) && ( (Wohnmobil_Temperatur.state as DecimalType) < 100.0) ) {
+            // calculate deviation ...
+            // deviationInPercent = (20.0 - (Wohnmobil_Temperatur.state as DecimalType)) * percentDeviationPerDegree * voltageDivider;
+        // }
+        
+
+		// var double battPercent = (((Wohnmobil_Battery_Voltage.state as DecimalType) - 11.8) / 0.08).intValue
+
+		Wohnmobil_Battery_Percent.postUpdate(batteryPercentage)
+		
+end
+
+rule "init"
+when
+	System started
+then
+	Wohnmobil_Battery_Percent.postUpdate(50.0)
+end
+
+rule "Update smartWoMo if target temperature was changed"
+when
+	Item Wohnmobil_Wunsch_Temperatur changed
+then
+	var response = sendHttpGetRequest("http://10.11.12.101/set?targetTemperature=" + (Wohnmobil_Wunsch_Temperatur.state as DecimalType).doubleValue.toString)	
+end

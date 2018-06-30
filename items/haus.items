@@ -1,0 +1,24 @@
+// Gruppen
+Group Keller_Gast
+
+/* Wetter Infos */
+Number:Temperature Aussentemperatur "Aussentemperatur [%.1f %unit%]" { channel="yahooweather:weather:reilingen:temperature" }
+Number:Dimensionless Luftfeuchtigkeit "Luftfeuchtigkeit [%.1f %unit%]" { channel="yahooweather:weather:reilingen:humidity" }
+Number:Pressure Luftdruck "Luftdruck [%.1f %unit%]" { channel="yahooweather:weather:reilingen:pressure" }
+
+/* Keller Gästezimmer */
+Number Keller_Gast_Wunsch_Temperatur (Keller_Gast) ["Switchable"]
+Switch Keller_Gast_Licht "Licht" (Keller_Gast) ["Switchable"]
+Switch Keller_Gast_Licht_Bett "Licht Bett" (Keller_Gast) ["Switchable"]
+Switch Keller_Gast_Licht_Fernseher "Licht Fernseher" (Keller_Gast) ["Switchable"]
+Switch Keller_Gast_Licht_Schreibtisch "Licht Schreibtisch" (Keller_Gast) ["Switchable"]
+Switch Keller_Gast_Musik "Musik" (Keller_Gast) ["Switchable"]
+Switch Keller_Gast_Musik_SWR3 "SWR3" (Keller_Gast) ["Switchable"]
+Switch Keller_Gast_Musik_Klassik "Klassik Radio" (Keller_Gast) ["Switchable"]
+Switch Keller_Gast_Musik_Jazz "Jazz Radio" (Keller_Gast) ["Switchable"]
+Switch Keller_Gast_Musik_Entspannung "Entspannung" (Keller_Gast) ["Switchable"]
+Switch Keller_Gast_Musik_Soundtrack "Soundtrack" (Keller_Gast) ["Switchable"]
+Switch Keller_Gast_Musik_Schlager "Schlager" (Keller_Gast) ["Switchable"]
+
+
+

@@ -1,0 +1,23 @@
+sitemap smartwomo label="Haus"
+{
+
+    Frame label="Gästezimmer im Keller" {
+    
+		Switch item=Wohnmobil_Heizungs_Schalter
+
+		Text item=Wohnmobil_Temperatur
+		Setpoint item=Wohnmobil_Wunsch_Temperatur label="Thermostat [%.1f °C]" step=0.5 minValue=1 maxValue=30
+        Text item=Wohnmobil_Luftfeuchtigkeit
+        
+        Switch item=Wohnmobil_Relais
+        
+        Switch item=Szene label="" icon="" mappings=[0="AUS", 1="NORMAL", 2="ARBEITEN", 3="LESEN", 4="GEMÜTLICH"]
+        Switch item=Lichtfarbe label="Farbe" icon="colorpicker" mappings=[0="AUTO",1="KALT", 2="WARM"]
+        
+        Group item=gTechnicalInfo label="Technische Information" icon=""
+				
+    }
+			
+}
+
+// vim: syntax=Xtend

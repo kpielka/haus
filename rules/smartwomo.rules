@@ -1,0 +1,180 @@
+val String liteThingBase    = "http://liteThing/"
+val String liteThingUrl 	= liteThingBase + "thing?"
+//val String wohnmobilUrl 	= "http://192.168.178.203:8080/"
+
+rule "init"
+when
+    System started
+then
+	postUpdate(Wohnmobil_Temperatur, "21.0");
+	postUpdate(Wohnmobil_Luftfeuchtigkeit, "50.0");
+	postUpdate(Wohnmobil_Wunsch_Temperatur, 21.0);
+	postUpdate(Wohnmobil_Heizungs_Schalter, OFF);
+	postUpdate(Truma_Brenner, "ist ausgeschaltet");
+	Wohnmobil_Battery_Percent.postUpdate(50.0);
+	Heizung_ist_eingeschaltet.postUpdate("false");
+	// sendHttpGetRequest(liteThingUrl + "/thing?targetTemperature=21.0" + "&" + "heatingControllerIsOn=0");
+	postUpdate(WoMo_Frischwasser, 23);
+	postUpdate(WoMo_Gas1, 3);
+	postUpdate(WoMo_Gas2, 100);
+end
+
+rule "switch WoMo heating on"
+when
+	Item WoMo_Heizungs_Schalter changed to ON
+then
+	logInfo("WoMo Heizungsschalter : ", "eingeschaltet");
+	executeCommandLine("/etc/openhab2/scripts/setWoMoHeatingSwitchOn.sh", 5000); 
+end
+
+rule "switch WoMo heating off"
+when
+	Item WoMo_Heizungs_Schalter changed to OFF
+then
+	logInfo("WoMo Heizungsschalter : ", "ausgeschaltet");
+	executeCommandLine("/etc/openhab2/scripts/setWoMoHeatingSwitchOff.sh", 5000); 
+end
+
+rule "switch heating on"
+when
+	Item Wohnmobil_Heizungs_Schalter changed to ON
+then
+	logInfo("Heizungsschalter : ", "aktiviert");
+	Heizung_ist_eingeschaltet.postUpdate("false");
+	postUpdate(Truma_Brenner, "wartet ...");
+end
+
+rule "switch heating off"
+when
+	Item Wohnmobil_Heizungs_Schalter changed to OFF
+then
+	logInfo("Heizungsschalter : ", "deaktiviert");
+	postUpdate(Truma_Brenner, "ist ausgeschaltet");
+end
+
+rule "read sensor values" 
+when 
+    // Time cron "0/1 * * * * ?" 
+    Time cron "0/5 * * * * ?" 
+then
+
+	/* retrieve data from smartWoMoHeating */
+	var String liteThing = sendHttpGetRequest(liteThingBase + "index.json");
+
+	/* read temperature  */	
+	var String currentTemperature = transform("JSONPATH", "$.temperature", liteThing);
+	postUpdate(Wohnmobil_Temperatur, currentTemperature);
+	
+	/* read humidity */
+	var String currentHumidity = transform("JSONPATH", "$.humidity", liteThing);
+	postUpdate(Wohnmobil_Luftfeuchtigkeit, currentHumidity);
+	
+	/* determine battery voltage */
+	var String currentAdInput = transform("JSONPATH", "$.analogInput", liteThing);
+	var double netVoltage = 3.2 * Float::parseFloat(currentAdInput) / 1023;
+	/* consider voltage divider */
+	var double voltage = netVoltage * 11.00;
+	var String voltageAsString = String.format( "%.1f", voltage ).replace(',', '.');
+	postUpdate(Wohnmobil_Battery_Voltage, DecimalType.valueOf( voltageAsString ));
+	/* update battery symbol  */
+	var double voltageAtHundertPercent = 12.6;
+	var double voltageAtZeroPercent = 11.8;
+	var double voltageRange = voltageAtHundertPercent - voltageAtZeroPercent;
+	var double batteryLevel = (Wohnmobil_Battery_Voltage.state as DecimalType).floatValue - voltageAtZeroPercent;
+	if (batteryLevel < 0.0) {batteryLevel = 0.0};
+	if (batteryLevel > voltageRange) {batteryLevel = voltageRange};
+	var double batteryPercentage = (batteryLevel / voltageRange) * 100;            
+	Wohnmobil_Battery_Percent.postUpdate(batteryPercentage);
+	
+	/* determine whether heating is active */
+	var String heatingIsActive= transform("JSONPATH", "$.relayAIsOn", liteThing);
+	if (Wohnmobil_Heizungs_Schalter.state==OFF) {
+		postUpdate(Truma_Brenner, "ist ausgeschaltet");
+	}	
+	else {
+		if (heatingIsActive.contains("1")) {
+			postUpdate(Truma_Brenner, "heizt !");
+		} else {
+			postUpdate(Truma_Brenner, "wartet ...");
+		}
+	}
+	
+	/* retrieve voltage and current from Tinkerforge brick 1 */
+	var String brick1Voltage = executeCommandLine("/etc/openhab2/scripts/getStackVoltage.sh", 5000); 
+	postUpdate(Brick_1_Voltage, brick1Voltage);
+	var String brick1Current = executeCommandLine("/etc/openhab2/scripts/getStackCurrent.sh", 5000); 
+	postUpdate(Brick_1_Current, brick1Current);
+
+	/* Werte vom Wohnmobil holen */
+	var String womoTemperaturJson = executeCommandLine("/etc/openhab2/scripts/getWoMoTemperature.sh", 5000); 
+	var String womoTemperatur = transform("JSONPATH", "$.state", womoTemperaturJson);
+	logInfo("WoMo Temperatur : ", womoTemperatur);
+	postUpdate(WoMo_Temperatur, womoTemperatur);
+	var String womoLuftfeuchtigkeitJson = executeCommandLine("/etc/openhab2/scripts/getWoMoHumidity.sh", 5000); 
+	var String womoLuftfeuchtigkeit = transform("JSONPATH", "$.state", womoLuftfeuchtigkeitJson);
+	logInfo("WoMo Luftfeuchtigkeit : ", womoLuftfeuchtigkeit);
+	postUpdate(WoMo_Luftfeuchtigkeit, womoLuftfeuchtigkeit);
+	var String womoHSJson = executeCommandLine("/etc/openhab2/scripts/getWoMoHeatingSwitch.sh", 5000); 
+	var String womoHS = transform("JSONPATH", "$.state", womoHSJson);
+	logInfo("WoMo Heizung : ", womoHS);
+	postUpdate(WoMo_Heizungs_Schalter, womoHS);
+	var String womoWunschTemperaturJson = executeCommandLine("/etc/openhab2/scripts/getWoMoTargetTemperature.sh", 5000); 
+	var String womoWunschTemperatur = transform("JSONPATH", "$.state", womoWunschTemperaturJson);
+	logInfo("WoMo Wunsch Temperatur : ", womoWunschTemperatur);
+	postUpdate(WoMo_Wunsch_Temperatur, womoWunschTemperatur);
+	var String wjson = executeCommandLine("/etc/openhab2/scripts/getWoMoBatteryPercent.sh", 5000); 
+	var String wvalue = transform("JSONPATH", "$.state", wjson);
+	logInfo("WoMo Batterie Prozent : ", wvalue);
+	postUpdate(WoMo_Battery_Percent, wvalue);
+
+end
+
+/*
+rule "router"
+when 
+	Item Router changed
+then
+	switch (Router.state as DecimalType) {
+		case 0: executeCommandLine("/etc/openhab2/scripts/noForwarding", 5000)
+		case 1: executeCommandLine("/etc/openhab2/scripts/mobileForwarding", 5000)
+		case 2: executeCommandLine("/etc/openhab2/scripts/wlanForwarding", 5000)
+		case 3: executeCommandLine("/etc/openhab2/scripts/vpnForwarding", 5000)
+	}
+end
+*/
+
+rule "Update smartWoMoHeating if target temperature was changed"
+when
+	Item Wohnmobil_Wunsch_Temperatur changed
+then
+	sendHttpGetRequest(liteThingUrl + "targetTemperature=" + (Wohnmobil_Wunsch_Temperatur.state as DecimalType).doubleValue.toString)	
+end
+
+rule "Update smartWoMoHeating if main switch of heating was switched on"
+when
+	Item Wohnmobil_Heizungs_Schalter changed to ON
+then
+	sendHttpGetRequest(liteThingUrl + "heatingControllerIsOn=1");	
+end
+
+rule "Update smartWoMoHeating if main switch of heating was switched off"
+when
+	Item Wohnmobil_Heizungs_Schalter changed to OFF
+then
+	sendHttpGetRequest(liteThingUrl + "heatingControllerIsOn=0");	
+end
+
+rule "Update smartWoMoHeating if relais B was switched on"
+when
+	Item Wohnmobil_Relais changed to ON
+then
+	sendHttpGetRequest(liteThingUrl + "relayBIsOn=1");	
+end
+
+rule "Update smartWoMoHeating if relais B was switched off"
+when
+	Item Wohnmobil_Relais changed to OFF
+then
+	sendHttpGetRequest(liteThingUrl + "relayBIsOn=0");	
+end
+

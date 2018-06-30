@@ -1,0 +1,17 @@
+// Gruppen
+group Wohnmobil
+
+/* Wohnmobil */
+Switch Wohnmobil_Heizungs_Schalter "Heizung" <switch> (Wohnmobil) ["Switchable"]
+
+Group WohnmobilThermostat "Fahrzeug" (Wohnmobil) ["Thermostat"]
+Number Wohnmobil_Wunsch_Temperatur "Thermostat" (WohnmobilThermostat) ["TargetTemperature"] { http="<[http://10.11.12.101/get:1000:JS(getTargetTemperature.js)]" }
+String Wohnmobil_Temperatur        "Temperatur [%s °C]" <temperature> (WohnmobilThermostat) ["CurrentTemperature"] { http="<[http://10.11.12.101/get:1000:JS(getTemperature.js)]" }
+String Wohnmobil_Luftfeuchtigkeit "Luftfeuchtigkeit [%s %%]" <humidity> (Wohnmobil) { http="<[http://10.11.12.101/get:1000:JS(getHumidity.js)]" }
+// String Wohnmobil_Aufbaubatterie "Batterie [%s Volt]" <battery> (Wohnmobil) { http="<[http://10.11.12.101/get:1000:JS(getBatteryVoltage.js)]" }
+Number Wohnmobil_Battery_Voltage "Batterie [%s Volt]" (Wohnmobil) { http="<[http://10.11.12.101/get:1000:JS(getBatteryVoltage.js)]" }
+
+Number Wohnmobil_Battery_Percent
+// Number Wohnmobil_Battery_Voltage
+
+// vim: syntax=Xtend

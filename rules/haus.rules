@@ -1,0 +1,37 @@
+rule "init"
+when
+    System started
+then
+	// postUpdate(Keller_Gast_Licht_Lesen, "OFF");
+	postUpdate(Keller_Gast_Wunsch_Temperatur, 21.0);
+	postUpdate(Keller_Gast_Licht, OFF);
+	postUpdate(Keller_Gast_Licht_Bett, OFF);
+	postUpdate(Keller_Gast_Licht_Fernseher, OFF);
+	postUpdate(Keller_Gast_Licht_Schreibtisch, OFF);
+	postUpdate(Keller_Gast_Musik, OFF);
+	postUpdate(Keller_Gast_Musik_SWR3, OFF);
+	postUpdate(Keller_Gast_Musik_Klassik, OFF);
+	postUpdate(Keller_Gast_Musik_Jazz, OFF);
+	postUpdate(Keller_Gast_Musik_Entspannung, OFF);
+	postUpdate(Keller_Gast_Musik_Soundtrack, OFF);
+	postUpdate(Keller_Gast_Musik_Schlager, OFF);
+
+/*
+    postUpdate(Keller_Gast_Licht_Szene, 0);
+	postUpdate(Keller_Gast_Licht_Helligkeit, 50);
+	postUpdate(Keller_Gast_Licht_Stimmung, 0);
+*/
+/*
+	postUpdate(Wohnmobil_Temperatur, "21.0");
+	postUpdate(Wohnmobil_Luftfeuchtigkeit, "50.0");
+	postUpdate(Wohnmobil_Wunsch_Temperatur, 21.0);
+	postUpdate(Wohnmobil_Heizungs_Schalter, OFF);
+	postUpdate(Truma_Brenner, "ist ausgeschaltet");
+	Wohnmobil_Battery_Percent.postUpdate(50.0);
+	Heizung_ist_eingeschaltet.postUpdate("false");
+	postUpdate(WoMo_Frischwasser, 23);
+	postUpdate(WoMo_Gas1, 3);
+	postUpdate(WoMo_Gas2, 100);
+*/
+end
+
